@@ -1,8 +1,8 @@
 // src/components/budgets/BudgetModal.tsx
 import { useState } from 'react';
-import { X } from 'lucide-react';
 import { useCreateBudget, useUpdateBudget } from '../../hooks/useBudgets';
 import { useCategories } from '../../hooks/useCategories';
+import { X } from 'lucide-react';
 
 interface BudgetModalProps {
   budget?: any;
