@@ -1,16 +1,14 @@
-// src/api/client.ts
 import axios from 'axios';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:10000';
 
-// Crear instancia de axios
+// Crear instancia de axios con /api en la baseURL
 export const apiClient = axios.create({
-  baseURL: API_URL,
+  baseURL: `${API_URL}/api`, // ← Agregar /api aquí
   headers: {
     'Content-Type': 'application/json',
   },
 });
-
 // Interceptor para agregar el token a todas las peticiones
 apiClient.interceptors.request.use(
   (config) => {
