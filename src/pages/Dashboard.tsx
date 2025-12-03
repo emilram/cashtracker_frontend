@@ -28,8 +28,10 @@ const Dashboard = () => {
       const yearNum = date.getFullYear();
 
       const monthTransactions = transactionsData.transactions.filter((t) => {
-        const tDate = new Date(t.date);
-        return tDate.getMonth() + 1 === monthNum && tDate.getFullYear() === yearNum;
+        // ✅ FIX: Extraer mes y año del string ISO directamente
+        const dateStr = t.date.split('T')[0]; // "2025-12-01"
+        const [year, month] = dateStr.split('-').map(Number);
+        return month === monthNum && year === yearNum;
       });
 
       const income = monthTransactions
@@ -62,13 +64,13 @@ const Dashboard = () => {
       };
     }
 
-    // Filtrar transacciones por mes y año actual
+    // ✅ FIX: Filtrar transacciones usando el string ISO directamente
     const transactions = transactionsData.transactions.filter((transaction) => {
-      const transactionDate = new Date(transaction.date);
-      const transactionMonth = transactionDate.getMonth() + 1;
-      const transactionYear = transactionDate.getFullYear();
+      // Extraer año y mes directamente del string ISO (sin día para evitar warning)
+      const dateStr = transaction.date.split('T')[0]; // "2025-12-01"
+      const [year, month] = dateStr.split('-').map(Number);
       
-      return transactionMonth === selectedMonth && transactionYear === selectedYear;
+      return month === selectedMonth && year === selectedYear;
     });
 
     const totalIncome = transactions
@@ -82,7 +84,12 @@ const Dashboard = () => {
     const balance = totalIncome - totalExpense;
 
     // Agrupar gastos por categoría
-    const expensesByCategory: any = {};
+    const expensesByCategory: Record<string, {
+      name: string;
+      value: number;
+      color: string;
+      icon: string;
+    }> = {};
     
     transactions
       .filter(t => t.type === 'expense')
@@ -121,7 +128,7 @@ const Dashboard = () => {
       byCategory,
       recentTransactions,
     };
-  }, [transactionsData]);
+  }, [transactionsData, selectedMonth, selectedYear]);
 
   if (isLoading) {
     return (
@@ -183,7 +190,7 @@ const Dashboard = () => {
         <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Gasto Total </p>
+              <p className="text-sm font-medium text-gray-600">Gasto Total</p>
               <p className="text-2xl font-bold text-red-600 mt-2">
                 ${stats.totalExpense.toFixed(2)}
               </p>
@@ -212,26 +219,26 @@ const Dashboard = () => {
 
       {/* Gráfica de tendencia mensual */}
       <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Tendencia Mensual (Ultimos 6 meses)</h2>
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">Tendencia Mensual (Últimos 6 meses)</h2>
         {monthlyTrend.length > 0 ? (
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={monthlyTrend}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="month" />
               <YAxis />
-              <Tooltip formatter={(value: number) => `${value.toFixed(2)}`} />
+              <Tooltip formatter={(value: number) => `$${value.toFixed(2)}`} />
               <Legend />
               <Line 
                 type="monotone" 
                 dataKey="income" 
-                stroke="#6BCF7F" 
+                stroke="#10b981" 
                 strokeWidth={2}
                 name="Ingreso"
               />
               <Line 
                 type="monotone" 
                 dataKey="expense" 
-                stroke="#FF6B6B" 
+                stroke="#ef4444" 
                 strokeWidth={2}
                 name="Gasto"
               />
@@ -248,7 +255,7 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Gráfica de gastos por categoría */}
         <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Gastos por categoria</h2>
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">Gastos por categoría</h2>
           {stats.byCategory.length > 0 ? (
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
@@ -264,7 +271,7 @@ const Dashboard = () => {
                   fill="#8884d8"
                   dataKey="value"
                 >
-                  {stats.byCategory.map((entry: any, index: number) => (
+                  {stats.byCategory.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
@@ -281,7 +288,7 @@ const Dashboard = () => {
 
         {/* Transacciones recientes */}
         <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Recent Transactions</h2>
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">Transacciones Recientes</h2>
           {stats.recentTransactions.length > 0 ? (
             <div className="space-y-3">
               {stats.recentTransactions.map((transaction) => (
@@ -313,7 +320,7 @@ const Dashboard = () => {
             </div>
           ) : (
             <div className="h-[300px] flex items-center justify-center text-gray-500">
-              Todavia no hay transacciones este mes
+              Todavía no hay transacciones este mes
             </div>
           )}
         </div>

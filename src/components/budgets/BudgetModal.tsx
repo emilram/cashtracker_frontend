@@ -77,7 +77,7 @@ const BudgetModal = ({ budget, selectedMonth, selectedYear, onClose }: BudgetMod
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
           <h2 className="text-xl font-bold text-gray-900">
-            {isEditing ? 'Edit Budget' : 'New Budget'}
+            {isEditing ? 'Editar Presupuesto' : 'Nuevo Presupuesto'}
           </h2>
           <button
             onClick={onClose}
@@ -98,7 +98,7 @@ const BudgetModal = ({ budget, selectedMonth, selectedYear, onClose }: BudgetMod
           {/* Category */}
           <div>
             <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-2">
-              Category
+              Categoria
             </label>
             <select
               id="category"

@@ -18,25 +18,18 @@ const TransactionsPage = () => {
   const [editingTransaction, setEditingTransaction] = useState<any>(null);
 
   // Queries
-const { data: transactionsData, isLoading } = useTransactions();
-
-
-
-
-
+  const { data: transactionsData, isLoading } = useTransactions();
   const { data: categoriesData } = useCategories();
   const deleteMutation = useDeleteTransaction();
-// Filtrar TODO en el frontend
+
+  // ✅ Filtrar TODO en el frontend con FIX de zona horaria
   const filteredTransactions = (transactionsData?.transactions || []).filter((transaction) => {
-    const transactionDate = new Date(transaction.date);
-    const transactionMonth = transactionDate.getMonth() + 1;
-    const transactionYear = transactionDate.getFullYear();
-
-    
-
+    // ✅ FIX: Extraer mes y año del string ISO directamente
+    const dateStr = transaction.date.split('T')[0]; // "2025-12-01"
+    const [year, month] = dateStr.split('-').map(Number);
 
     // Filtro por mes y año
-    if (transactionMonth !== selectedMonth || transactionYear !== selectedYear) {
+    if (month !== selectedMonth || year !== selectedYear) {
       return false;
     }
 
@@ -209,7 +202,7 @@ const { data: transactionsData, isLoading } = useTransactions();
         ) : filteredTransactions.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-64 text-gray-500">
             <p className="text-lg font-medium">No se Encontraron Transacciones</p>
-            <p className="text-sm mt-1">Intenta ajustar tus filtros o agrega una nueva Transaccionn</p>
+            <p className="text-sm mt-1">Intenta ajustar tus filtros o agrega una nueva Transaccion</p>
           </div>
         ) : (
           <div className="overflow-x-auto">

@@ -1,6 +1,6 @@
 // src/pages/auth/LoginPage.tsx
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import {  useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { LogIn, Mail, Lock, AlertCircle } from 'lucide-react';
 
@@ -108,7 +108,7 @@ const LoginPage = () => {
             </button>
           </form>
 
-          {/* Register Link */}
+          {/*{/* Register Link 
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
               No tienes una ceunta?{' '}
@@ -116,7 +116,7 @@ const LoginPage = () => {
                 Registrarse
               </Link>
             </p>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
